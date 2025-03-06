@@ -24,6 +24,7 @@ import dynamic from "next/dynamic"
 
 const ShipmentMap = dynamic(() => import("@/components/shipment-map"), { ssr: false })
 
+// Sample data based on the image
 const data: Shipment[] = [
   {
     trackingNumber: "282032630077",
@@ -35,11 +36,15 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6441725153",
     status: "en_ruta",
-    priority: "alta",
     payment: {
       amount: 250.0,
       status: "paid",
     },
+    statusHistory: [
+      { status: "recoleccion", timestamp: "2024-11-26T09:30:00", notes: "Paquete recogido en sucursal" },
+      { status: "pendiente", timestamp: "2024-11-26T14:15:00", notes: "En espera de asignación de ruta" },
+      { status: "en_ruta", timestamp: "2024-11-27T08:45:00", notes: "En camino con el repartidor Juan Pérez" },
+    ],
   },
   {
     trackingNumber: "282071613818",
@@ -51,11 +56,35 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6441142211",
     status: "pendiente",
-    priority: "media",
     payment: {
       amount: 180.5,
       status: "pending",
     },
+    statusHistory: [
+      { status: "recoleccion", timestamp: "2024-11-27T10:20:00", notes: "Paquete recogido en sucursal" },
+      { status: "pendiente", timestamp: "2024-11-27T15:30:00", notes: "En espera de asignación de ruta" },
+    ],
+  },
+  {
+    trackingNumber: "508569677330",
+    recipientName: "EDGAR MIRANDA",
+    recipientAddress: "RUIZ CORTINEZ 48",
+    recipientCity: "BACUM",
+    recipientZip: "85270",
+    commitDate: "11/25/2024",
+    commitTime: "18:00:00",
+    recipientPhone: "6442493382",
+    status: "entregado",
+    payment: {
+      amount: 175.0,
+      status: "paid",
+    },
+    statusHistory: [
+      { status: "recoleccion", timestamp: "2024-11-23T08:15:00", notes: "Paquete recogido en sucursal" },
+      { status: "pendiente", timestamp: "2024-11-23T11:30:00", notes: "En espera de asignación de ruta" },
+      { status: "en_ruta", timestamp: "2024-11-24T09:00:00", notes: "En camino con el repartidor María González" },
+      { status: "entregado", timestamp: "2024-11-25T14:45:00", notes: "Entregado al destinatario" },
+    ],
   },
   {
     trackingNumber: "282081512100",
@@ -67,7 +96,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6441496206",
     status: "en_ruta",
-    priority: "alta",
     payment: {
       amount: 200.0,
       status: "paid",
@@ -83,26 +111,9 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6442214397",
     status: "pendiente",
-    priority: "media",
     payment: {
       amount: 150.0,
       status: "pending",
-    },
-  },
-  {
-    trackingNumber: "508569677330",
-    recipientName: "EDGAR MIRANDA",
-    recipientAddress: "RUIZ CORTINEZ 48",
-    recipientCity: "BACUM",
-    recipientZip: "85270",
-    commitDate: "11/25/2024",
-    commitTime: "18:00:00",
-    recipientPhone: "6442493382",
-    status: "entregado",
-    priority: "baja",
-    payment: {
-      amount: 175.0,
-      status: "paid",
     },
   },
   {
@@ -115,7 +126,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6442489146",
     status: "en_ruta",
-    priority: "alta",
     payment: {
       amount: 120.0,
       status: "pending",
@@ -131,7 +141,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6441102428",
     status: "pendiente",
-    priority: "media",
     payment: {
       amount: 220.0,
       status: "pending",
@@ -147,7 +156,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6621940962",
     status: "en_ruta",
-    priority: "alta",
     payment: {
       amount: 300.0,
       status: "paid",
@@ -163,7 +171,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6442252088",
     status: "pendiente",
-    priority: "media",
     payment: {
       amount: 180.0,
       status: "pending",
@@ -179,7 +186,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6442136139",
     status: "en_ruta",
-    priority: "alta",
     payment: {
       amount: 220.0,
       status: "paid",
@@ -195,7 +201,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6442903760",
     status: "pendiente",
-    priority: "media",
     payment: {
       amount: 210.0,
       status: "pending",
@@ -211,7 +216,6 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6442047790",
     status: "en_ruta",
-    priority: "alta",
     payment: {
       amount: 190.0,
       status: "paid",
@@ -227,14 +231,12 @@ const data: Shipment[] = [
     commitTime: "21:00:00",
     recipientPhone: "6449979289",
     status: "pendiente",
-    priority: "media",
     payment: {
       amount: 150.0,
       status: "pending",
     },
   },
-];
-
+]
 
 export default function ShipmentsPage() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)

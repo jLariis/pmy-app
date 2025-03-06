@@ -7,6 +7,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
 
+// Update the Shipment type to include priority and statusHistory
 export type Shipment = {
   trackingNumber: string
   recipientName: string
@@ -21,7 +22,12 @@ export type Shipment = {
     amount: number
     status: "paid" | "pending" | "failed"
   } | null
-  priority: "baja" | "media" | "alta"
+  priority?: "alta" | "media" | "baja"
+  statusHistory?: Array<{
+    status: "recoleccion" | "pendiente" | "en_ruta" | "entregado" | "no_entregado"
+    timestamp: string
+    notes?: string
+  }>
 }
 
 export const columns: ColumnDef<Shipment>[] = [
@@ -113,20 +119,6 @@ export const columns: ColumnDef<Shipment>[] = [
           <Badge variant={variant}>{label}</Badge>
         </div>
       )
-    },
-  },
-  {
-    accessorKey: "priority",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Prioridad" />,
-    cell: ({ row }) => {
-      const priority = row.getValue("priority") as Shipment["priority"]
-      const priorityMap = {
-        baja: { label: "Baja", variant: "default" as const },
-        media: { label: "Media", variant: "info" as const },
-        alta: { label: "Alta", variant: "destructive" as const }
-      }
-      const { label, variant } = priorityMap[priority] || { label: "Desconocido", variant: "default" as const }
-      return <Badge variant={variant}>{label}</Badge>
     },
   },
   {

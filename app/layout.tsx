@@ -10,7 +10,6 @@ export const metadata = {
   title: "Del Yaqui - Sistema de Paquetería",
   description: "Sistema de gestión para empresa de paquetería Del Yaqui",
 }
-
 export default function RootLayout({
   children,
 }: {
@@ -26,4 +25,3 @@ export default function RootLayout({
     </html>
   )
 }
-
