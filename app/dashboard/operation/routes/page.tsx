@@ -21,6 +21,15 @@ const data = [
     startTime: "2023-06-10T09:00:00",
     estimatedArrival: "2023-06-10T12:00:00",
   },
+  {
+    id: "2",
+    name: "Ruta Obregón - Alamos",
+    driver: "María González",
+    vehicle: "Chevrolet Silverado",
+    status: "Completada",
+    startTime: "2023-07-10T09:00:00",
+    estimatedArrival: "2023-07-10T12:00:00",
+  },
   // Añade más rutas aquí...
 ]
 
