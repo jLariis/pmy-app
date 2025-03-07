@@ -102,6 +102,35 @@ export const columns: ColumnDef<Shipment>[] = [
     },
   },
   {
+    accessorKey: "priority",
+    header: "Prioridad",
+    cell: ({ row }) => {
+      const priority = row.getValue("priority");
+
+      // Asignar colores según la prioridad
+      let color: string;
+      switch (priority) {
+        case "alta":
+          color = "bg-red-500"; // rojo para alta
+          break;
+        case "media":
+          color = "bg-yellow-500"; // amarillo para media
+          break;
+        case "baja":
+          color = "bg-green-500"; // verde para baja
+          break;
+        default:
+          color = "bg-gray-500"; // gris por defecto
+      }
+
+      return (
+        <Badge className={`${color} text-white`}>
+          {priority.charAt(0).toUpperCase() + priority.slice(1)}
+        </Badge>
+      );
+    },
+  },
+  {
     accessorKey: "payment",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Pago" />,
     cell: ({ row }) => {

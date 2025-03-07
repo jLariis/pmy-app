@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Package, Eye, Map } from "lucide-react"
 import { columns, type Shipment } from "./columns"
-import { CSVUploadModal } from "@/components/modals/csv-upload-modal"
+import { ExcelUploadModal } from "@/components/modals/excel-upload-modal"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ShipmentTimeline } from "@/components/shipment-timeline"
 import dynamic from "next/dynamic"
@@ -238,15 +238,21 @@ const data: Shipment[] = [
   },
 ]
 
+
 export default function ShipmentsPage() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isNewShipmentOpen, setIsNewShipmentOpen] = useState(false)
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null)
   const [isMapOpen, setIsMapOpen] = useState(false)
+  const [shipments, setShipments] = useState<Shipment[]>([]);
 
   const handleViewTimeline = useCallback((shipment: Shipment) => {
     setSelectedShipment(shipment)
   }, [])
+
+  const handleDataLoaded = (data: Shipment[]) => {
+    setShipments(data);
+  }
 
   const updatedColumns = columns.map((col) =>
     col.id === "actions"
@@ -267,7 +273,7 @@ export default function ShipmentsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <PageHeader title="Envíos" description="Gestión y seguimiento de envíos" />
         <div className="flex flex-col sm:flex-row gap-2">
-          <CSVUploadModal open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen} />
+          <ExcelUploadModal open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen} onDataLoaded={handleDataLoaded}/>
           <Dialog open={isNewShipmentOpen} onOpenChange={setIsNewShipmentOpen}>
             <DialogTrigger asChild>
               <Button variant="default" className="bg-brand-brown hover:bg-brand-brown/90">
@@ -356,7 +362,7 @@ export default function ShipmentsPage() {
       </div>
       <DataTable
         columns={updatedColumns}
-        data={data}
+        data={shipments}
         searchKey="trackingNumber"
         filters={[
           {
