@@ -90,7 +90,7 @@ const menuItems: MenuItem[] = [
   {
     name: "Análisis de Ingresos",
     icon: <DollarSign className="text-brand-brown" />,
-    path: "/dashboard/ingresos",
+    path: "/dashboard/reports/ingresos",
   },
   {
     name: "Nómina",
