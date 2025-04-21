@@ -104,7 +104,7 @@ const menuItems: MenuItem[] = [
   { name: "Facturas", icon: <FileText className="text-brand-brown" />, path: "/dashboard/invoices" },
 ]
 
-export function Sidebar() {
+export function Sidebar({ className = "" }: { className?: string }) {
   const [expandedItems, setExpandedItems] = useState<string[]>([])
 
   const toggleSubMenu = (itemName: string) => {
@@ -146,7 +146,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+      className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform translate-x-0 ${className}`}
       aria-label="Sidebar"
     >
       <div className="h-full px-3 py-4 overflow-y-auto bg-white border-r">
