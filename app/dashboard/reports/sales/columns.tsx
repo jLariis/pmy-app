@@ -47,4 +47,3 @@ export const columns: ColumnDef<SalesReport>[] = [
     },
   },
 ]
-

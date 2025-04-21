@@ -70,4 +70,3 @@ export function Overview() {
     </ResponsiveContainer>
   )
 }
-

@@ -51,4 +51,3 @@ const recentShipments = [
     amount: "$39.00",
   },
 ]
-

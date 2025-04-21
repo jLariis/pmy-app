@@ -107,4 +107,3 @@ export function EnhancedTable<TData, TValue>({ columns, data, searchKey }: DataT
     </div>
   )
 }
-

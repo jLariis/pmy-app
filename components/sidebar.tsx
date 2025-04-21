@@ -1,3 +1,4 @@
+// Actualizar el componente Sidebar para incluir el enlace a Analytics
 "use client"
 
 import Link from "next/link"
@@ -28,6 +29,7 @@ import {
   Home,
   Settings,
   LogOut,
+  LineChart,
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -92,6 +94,7 @@ const sidebarItems = [
     subItems: [
       { title: "Ventas", href: "/dashboard/reports/sales", icon: CreditCard },
       { title: "Operaciones", href: "/dashboard/reports/operations", icon: Activity },
+      { title: "Análisis", href: "/dashboard/analytics", icon: LineChart },
     ],
   },
   {
@@ -137,8 +140,8 @@ export function AppSidebar() {
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5Iyplqwe2PCDj3xPhqZ19VfqFKAmBV.png"
               alt="Del Yaqui Logo"
-              width={250}
-              height={250}
+              width={150}
+              height={150}
               className="h-12 w-auto"
               priority
             />
@@ -288,7 +291,7 @@ export function MobileSidebar() {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-[280px] bg-brand-brown text-white transition-transform duration-300 ease-in-out">
+      <SheetContent side="left" className="p-0 w-[280px] bg-brand-brown text-white">
         <div className="flex h-full flex-col">
           <div className="flex h-16 items-center justify-center">
             <Link href="/dashboard">
@@ -382,4 +385,3 @@ export function Sidebar() {
     </SidebarProvider>
   )
 }
-

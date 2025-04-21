@@ -7,4 +7,3 @@ export const vehicleMaintenanceRoute = createFileRoute("/dashboard/vehicle-maint
 function VehicleMaintenance() {
   return <h1>Mantenimiento de Vehículos</h1>
 }
-

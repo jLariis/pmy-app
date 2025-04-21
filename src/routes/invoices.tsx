@@ -7,4 +7,3 @@ export const invoicesRoute = createFileRoute("/dashboard/invoices")({
 function Invoices() {
   return <h1>Facturas</h1>
 }
-

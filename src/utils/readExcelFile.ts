@@ -1,77 +1,131 @@
-import { Shipment } from "@/app/dashboard/operation/shipments/columns";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx"
 
-export const readExcelFile = (file: File): Promise<Shipment[]> => {
+/**
+ * Lee un archivo Excel y devuelve los datos como un array de objetos
+ * @param file Archivo Excel a leer
+ * @param sheetName Nombre de la hoja a leer (opcional)
+ * @returns Promise con los datos del Excel
+ */
+export const readExcelFile = (file: File, sheetName?: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = (e) => {
       try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0]; // Tomar la primera hoja
-        const sheet = workbook.Sheets[sheetName];
+        const data = e.target?.result
+        const workbook = XLSX.read(data, { type: "binary" })
 
-        // Convertir la hoja a JSON, comenzando desde la fila 5 (índice 4)
-        const jsonData = XLSX.utils.sheet_to_json<any>(sheet, { range: 6, header: 1 });
+        // Si no se especifica una hoja, usar la primera
+        const sheet = sheetName ? workbook.Sheets[sheetName] : workbook.Sheets[workbook.SheetNames[0]]
 
-        console.log("Datos crudos del Excel:", jsonData); // Depuración
+        // Convertir a JSON
+        const jsonData = XLSX.utils.sheet_to_json(sheet)
 
-        const today = new Date();
-        const todayISO = today.toISOString();
+        // Filtrar filas vacías
+        const filteredData = jsonData.filter((row: any) => {
+          return Object.values(row).some((value) => value !== null && value !== undefined && value !== "")
+        })
 
-        const shipments: Shipment[] = jsonData
-          .map((row) => {
-            // Verifica que la fila tenga datos
-            if (!row || row.length === 0) return null;
-
-            const commitDate = new Date(row[5]); // "Commit Date" está en la columna 5
-            const timeDifference =
-              (commitDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
-
-            let priority: "alta" | "media" | "baja" | undefined;
-            if (timeDifference <= 0) {
-              priority = "alta";
-            } else if (timeDifference <= 3) {
-              priority = "media";
-            } else {
-              priority = "baja";
-            }
-
-            return {
-              trackingNumber: row[0], // "Tracking Number" está en la columna 0
-              recipientName: row[1], // "Recip Name" está en la columna 1
-              recipientAddress: row[2], // "Recip Addr" está en la columna 2
-              recipientCity: row[3], // "Recip City" está en la columna 3
-              recipientZip: row[4], // "Recip Zip" está en la columna 4
-              commitDate: row[5], // "Commit Date" está en la columna 5
-              commitTime: row[6], // "Commit Time" está en la columna 6
-              recipientPhone: row[7], // "Recip Phone" está en la columna 7
-              status: "pendiente",
-              payment: null,
-              priority,
-              statusHistory: [
-                {
-                  status: "recoleccion",
-                  timestamp: todayISO,
-                  notes: "Paquete recogido en sucursal",
-                },
-              ],
-            };
-          })
-          .filter(Boolean); // Filtra filas vacías o nulas
-
-        resolve(shipments);
+        resolve(filteredData)
       } catch (error) {
-        console.error("Error al procesar el archivo Excel:", error); // Depuración
-        reject("Error al procesar el archivo Excel.");
+        reject(error)
       }
-    };
+    }
 
     reader.onerror = (error) => {
-      console.error("Error al leer el archivo:", error); // Depuración
-      reject(error);
-    };
-    reader.readAsArrayBuffer(file);
-  });
-};
+      reject(error)
+    }
+
+    reader.readAsBinaryString(file)
+  })
+}
+
+/**
+ * Obtiene los nombres de las hojas de un archivo Excel
+ * @param file Archivo Excel
+ * @returns Promise con los nombres de las hojas
+ */
+export const getExcelSheetNames = (file: File): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = (e) => {
+      try {
+        const data = e.target?.result
+        const workbook = XLSX.read(data, { type: "binary" })
+        resolve(workbook.SheetNames)
+      } catch (error) {
+        reject(error)
+      }
+    }
+
+    reader.onerror = (error) => {
+      reject(error)
+    }
+
+    reader.readAsBinaryString(file)
+  })
+}
+
+/**
+ * Convierte datos a un archivo Excel
+ * @param data Datos a convertir
+ * @param sheetName Nombre de la hoja
+ * @param fileName Nombre del archivo a descargar
+ */
+export const exportToExcel = (data: any[], sheetName = "Hoja1", fileName = "export.xlsx"): void => {
+  const worksheet = XLSX.utils.json_to_sheet(data)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName)
+  XLSX.writeFile(workbook, fileName)
+}
+
+/**
+ * Procesa datos específicos de FedEx y DHL para el módulo de ingresos
+ * @param data Datos del Excel
+ * @returns Datos procesados con cálculos de ingresos
+ */
+export const processDeliveryData = (data: any[]): any[] => {
+  return data.map((row) => {
+    // Determinar si es FedEx o DHL basado en los datos
+    const isFedEx =
+      row.Compañia?.toLowerCase().includes("fedex") ||
+      row.Empresa?.toLowerCase().includes("fedex") ||
+      row.Carrier?.toLowerCase().includes("fedex")
+
+    const isDHL =
+      row.Compañia?.toLowerCase().includes("dhl") ||
+      row.Empresa?.toLowerCase().includes("dhl") ||
+      row.Carrier?.toLowerCase().includes("dhl")
+
+    // Determinar tipo de entrega
+    const deliveryType = row.TipoEntrega || row.Tipo || row.Status || ""
+
+    // Calcular ingreso basado en tipo de entrega y compañía
+    let income = 0
+
+    if (isFedEx) {
+      if (deliveryType.includes("POD")) income = 12.5
+      else if (deliveryType.includes("DEX 07")) income = 10.0
+      else if (deliveryType.includes("OK")) income = 12.5
+      else if (deliveryType.includes("BA")) income = 0
+      else income = 11.0 // Valor por defecto
+    } else if (isDHL) {
+      if (deliveryType.includes("POD")) income = 13.0
+      else if (deliveryType.includes("DEX 07")) income = 10.5
+      else if (deliveryType.includes("OK")) income = 13.0
+      else if (deliveryType.includes("BA")) income = 0
+      else income = 11.5 // Valor por defecto
+    }
+
+    return {
+      ...row,
+      Compañia: isFedEx ? "FedEx" : isDHL ? "DHL" : row.Compañia || row.Empresa || row.Carrier || "Desconocido",
+      TipoEntrega: deliveryType,
+      Ingreso: income,
+      Fecha: row.Fecha || row.Date || new Date().toISOString().split("T")[0],
+    }
+  })
+}
+
+export default readExcelFile

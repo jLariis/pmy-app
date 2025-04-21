@@ -7,4 +7,3 @@ export const operationRoute = createFileRoute("/dashboard/operation")({
 function Operation() {
   return <h1>Operación</h1>
 }
-

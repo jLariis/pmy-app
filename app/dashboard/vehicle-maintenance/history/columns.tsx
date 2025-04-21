@@ -56,4 +56,3 @@ export const columns: ColumnDef<MaintenanceHistory>[] = [
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]
-

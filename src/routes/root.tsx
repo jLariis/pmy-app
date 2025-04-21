@@ -7,4 +7,3 @@ export const rootRoute = createRootRoute({
     </div>
   ),
 })
-

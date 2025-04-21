@@ -80,4 +80,3 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
     </div>
   )
 }
-

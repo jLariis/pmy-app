@@ -7,7 +7,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
 import { Button } from "@/components/ui/button"
 import { Eye } from "lucide-react"
 
-// Update the Shipment type to include priority and statusHistory
+// Modificar la definición del tipo Shipment para eliminar weight, dimensions y service
 export type Shipment = {
   trackingNumber: string
   recipientName: string
@@ -27,7 +27,10 @@ export type Shipment = {
     status: "recoleccion" | "pendiente" | "en_ruta" | "entregado" | "no_entregado"
     timestamp: string
     notes?: string
+    location?: string
+    updatedBy?: string
   }>
+  instructions?: string
 }
 
 export const columns: ColumnDef<Shipment>[] = [
@@ -102,35 +105,6 @@ export const columns: ColumnDef<Shipment>[] = [
     },
   },
   {
-    accessorKey: "priority",
-    header: "Prioridad",
-    cell: ({ row }) => {
-      const priority = row.getValue("priority");
-
-      // Asignar colores según la prioridad
-      let color: string;
-      switch (priority) {
-        case "alta":
-          color = "bg-red-500"; // rojo para alta
-          break;
-        case "media":
-          color = "bg-yellow-500"; // amarillo para media
-          break;
-        case "baja":
-          color = "bg-green-500"; // verde para baja
-          break;
-        default:
-          color = "bg-gray-500"; // gris por defecto
-      }
-
-      return (
-        <Badge className={`${color} text-white`}>
-          {priority.charAt(0).toUpperCase() + priority.slice(1)}
-        </Badge>
-      );
-    },
-  },
-  {
     accessorKey: "payment",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Pago" />,
     cell: ({ row }) => {
@@ -151,6 +125,23 @@ export const columns: ColumnDef<Shipment>[] = [
     },
   },
   {
+    accessorKey: "priority",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Prioridad" />,
+    cell: ({ row }) => {
+      const priority = row.getValue("priority") as Shipment["priority"]
+      if (!priority) return "Normal"
+
+      const priorityMap = {
+        alta: { label: "Alta", variant: "destructive" as const },
+        media: { label: "Media", variant: "warning" as const },
+        baja: { label: "Baja", variant: "success" as const },
+      }
+
+      const { label, variant } = priorityMap[priority]
+      return <Badge variant={variant}>{label}</Badge>
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => (
       <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => console.log("View timeline", row.original)}>
@@ -159,4 +150,3 @@ export const columns: ColumnDef<Shipment>[] = [
     ),
   },
 ]
-

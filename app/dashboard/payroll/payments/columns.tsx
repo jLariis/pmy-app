@@ -64,4 +64,3 @@ export const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]
-

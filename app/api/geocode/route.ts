@@ -19,4 +19,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Failed to fetch location data" }, { status: 500 })
   }
 }
-

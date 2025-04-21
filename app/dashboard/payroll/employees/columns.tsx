@@ -51,4 +51,3 @@ export const columns: ColumnDef<Employee>[] = [
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]
-

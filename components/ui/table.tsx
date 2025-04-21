@@ -47,4 +47,3 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
 )
 
 export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell }
-

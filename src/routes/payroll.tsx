@@ -7,4 +7,3 @@ export const payrollRoute = createFileRoute("/dashboard/payroll")({
 function Payroll() {
   return <h1>Nómina</h1>
 }
-

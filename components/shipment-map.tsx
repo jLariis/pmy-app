@@ -114,4 +114,3 @@ export default function ShipmentMap({ shipments }: ShipmentMapProps) {
     </MapContainer>
   )
 }
-

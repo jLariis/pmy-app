@@ -48,4 +48,3 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
     </DropdownMenu>
   )
 }
-

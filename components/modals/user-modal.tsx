@@ -67,4 +67,3 @@ export function UserModal({ isOpen, onClose }: UserModalProps) {
     </Dialog>
   )
 }
-

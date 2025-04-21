@@ -62,4 +62,3 @@ export const columns: ColumnDef<MaintenanceSchedule>[] = [
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]
-

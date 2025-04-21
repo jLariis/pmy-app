@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Phone, CheckCircle, XCircle } from 'lucide-react'
+import { MapPin, Phone, CheckCircle, XCircle } from "lucide-react"
 import { ShipmentTimeline } from "@/components/shipment-timeline"
-import { Shipment } from "@/app/dashboard/operation/shipments/columns"
+import type { Shipment } from "@/app/dashboard/operation/shipments/columns"
 
 interface DeliveryDetailsProps {
   shipment: Shipment | null
@@ -14,12 +14,7 @@ interface DeliveryDetailsProps {
   onUpdateStatus: (status: "entregado" | "no_entregado") => void
 }
 
-export function DeliveryDetails({ 
-  shipment, 
-  isOpen, 
-  onClose, 
-  onUpdateStatus 
-}: DeliveryDetailsProps) {
+export function DeliveryDetails({ shipment, isOpen, onClose, onUpdateStatus }: DeliveryDetailsProps) {
   if (!shipment) return null
 
   return (

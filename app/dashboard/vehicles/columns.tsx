@@ -71,4 +71,3 @@ export const columns: ColumnDef<Vehicle>[] = [
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]
-

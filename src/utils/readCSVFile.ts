@@ -1,77 +1,56 @@
-import { Shipment } from "@/app/dashboard/operation/shipments/columns";
-import * as XLSX from "xlsx";
+import Papa from "papaparse"
 
-export const readCSVFile = (file: File): Promise<Shipment[]> => {
+/**
+ * Lee un archivo CSV y devuelve los datos como un array de objetos
+ * @param file Archivo CSV a leer
+ * @returns Promise con los datos del CSV
+ */
+export const readCSVFile = (file: File): Promise<any[]> => {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        // Filtrar filas que son completamente vacías
+        const data = results.data.filter((row: any) => {
+          return Object.values(row).some((value) => value !== null && value !== undefined && value !== "")
+        })
+        resolve(data)
+      },
+      error: (error) => {
+        reject(error)
+      },
+    })
+  })
+}
 
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0]; // Tomar la primera hoja
-        const sheet = workbook.Sheets[sheetName];
+/**
+ * Convierte un string CSV a un array de objetos
+ * @param csvString String CSV a convertir
+ * @returns Array de objetos con los datos del CSV
+ */
+export const parseCSVString = (csvString: string): Promise<any[]> => {
+  return new Promise((resolve, reject) => {
+    Papa.parse(csvString, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        resolve(results.data)
+      },
+      error: (error) => {
+        reject(error)
+      },
+    })
+  })
+}
 
-        // Convertir la hoja a JSON, comenzando desde la fila 5 (índice 4)
-        const jsonData = XLSX.utils.sheet_to_json<any>(sheet, { range: 6, header: 1 });
+/**
+ * Convierte un array de objetos a un string CSV
+ * @param data Array de objetos a convertir
+ * @returns String CSV
+ */
+export const convertToCSV = (data: any[]): string => {
+  return Papa.unparse(data)
+}
 
-        console.log("Datos crudos del Excel:", jsonData); // Depuración
-
-        const today = new Date();
-        const todayISO = today.toISOString();
-
-        const shipments: Shipment[] = jsonData
-          .map((row) => {
-            // Verifica que la fila tenga datos
-            if (!row || row.length === 0) return null;
-
-            const commitDate = new Date(row[5]); // "Commit Date" está en la columna 5
-            const timeDifference =
-              (commitDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
-
-            let priority: "alta" | "media" | "baja" | undefined;
-            if (timeDifference <= 0) {
-              priority = "alta";
-            } else if (timeDifference <= 3) {
-              priority = "media";
-            } else {
-              priority = "baja";
-            }
-
-            return {
-              trackingNumber: row[0], // "Tracking Number" está en la columna 0
-              recipientName: row[13], // "Recip Name" está en la columna 1
-              recipientAddress: row[14], // "Recip Addr" está en la columna 2
-              recipientCity: row[15], // "Recip City" está en la columna 3
-              recipientZip: row[18], // "Recip Zip" está en la columna 4
-              commitDate: row[20], // "Commit Date" está en la columna 5
-              commitTime: row[21], // "Commit Time" está en la columna 6
-              recipientPhone: row[23], // "Recip Phone" está en la columna 7
-              status: "pendiente",
-              payment: null,
-              priority,
-              statusHistory: [
-                {
-                  status: "recoleccion",
-                  timestamp: todayISO,
-                  notes: "Paquete recogido en sucursal",
-                },
-              ],
-            };
-          })
-          .filter(Boolean); // Filtra filas vacías o nulas
-
-        resolve(shipments);
-      } catch (error) {
-        console.error("Error al procesar el archivo Excel:", error); // Depuración
-        reject("Error al procesar el archivo Excel.");
-      }
-    };
-
-    reader.onerror = (error) => {
-      console.error("Error al leer el archivo:", error); // Depuración
-      reject(error);
-    };
-    reader.readAsArrayBuffer(file);
-  });
-};
+export default readCSVFile

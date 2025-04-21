@@ -7,4 +7,3 @@ export const reportsRoute = createFileRoute("/dashboard/reports")({
 function Reports() {
   return <h1>Reportes Gerenciales</h1>
 }
-

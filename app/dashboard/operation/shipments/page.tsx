@@ -15,11 +15,13 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Package, Eye, Map } from "lucide-react"
+import { Package, Eye, Map, UserPlus } from "lucide-react"
 import { columns, type Shipment } from "./columns"
 import { ExcelUploadModal } from "@/components/modals/excel-upload-modal"
+import { ShipmentAssignmentModal } from "@/components/modals/shipment-assignment-modal"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ShipmentTimeline } from "@/components/shipment-timeline"
+import { RouteMap } from "@/components/route-map"
 import dynamic from "next/dynamic"
 
 const ShipmentMap = dynamic(() => import("@/components/shipment-map"), { ssr: false })
@@ -238,20 +240,23 @@ const data: Shipment[] = [
   },
 ]
 
-
 export default function ShipmentsPage() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isNewShipmentOpen, setIsNewShipmentOpen] = useState(false)
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null)
   const [isMapOpen, setIsMapOpen] = useState(false)
-  const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [shipments, setShipments] = useState<Shipment[]>(data)
+  const [rowSelection, setRowSelection] = useState({})
+  const [isAssignmentOpen, setIsAssignmentOpen] = useState(false)
+  const [selectedRouteId, setSelectedRouteId] = useState("1")
+  const [isRouteMapOpen, setIsRouteMapOpen] = useState(false)
 
   const handleViewTimeline = useCallback((shipment: Shipment) => {
     setSelectedShipment(shipment)
   }, [])
 
   const handleDataLoaded = (data: Shipment[]) => {
-    setShipments(data);
+    setShipments(data)
   }
 
   const updatedColumns = columns.map((col) =>
@@ -268,12 +273,21 @@ export default function ShipmentsPage() {
       : col,
   )
 
+  // Obtener los envíos seleccionados
+  const selectedShipments = Object.keys(rowSelection)
+    .map((idx) => shipments[Number.parseInt(idx)])
+    .filter(Boolean)
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <PageHeader title="Envíos" description="Gestión y seguimiento de envíos" />
         <div className="flex flex-col sm:flex-row gap-2">
-          <ExcelUploadModal open={isUploadModalOpen} onOpenChange={setIsUploadModalOpen} onDataLoaded={handleDataLoaded}/>
+          <ExcelUploadModal
+            open={isUploadModalOpen}
+            onOpenChange={setIsUploadModalOpen}
+            onDataLoaded={handleDataLoaded}
+          />
           <Dialog open={isNewShipmentOpen} onOpenChange={setIsNewShipmentOpen}>
             <DialogTrigger asChild>
               <Button variant="default" className="bg-brand-brown hover:bg-brand-brown/90">
@@ -344,6 +358,15 @@ export default function ShipmentsPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <Button
+            variant="outline"
+            className="bg-white hover:bg-gray-100"
+            onClick={() => setIsAssignmentOpen(true)}
+            disabled={Object.keys(rowSelection).length === 0}
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            Asignar Envíos
+          </Button>
           <Dialog open={isMapOpen} onOpenChange={setIsMapOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="bg-white hover:bg-gray-100">
@@ -355,7 +378,7 @@ export default function ShipmentsPage() {
               <DialogHeader>
                 <DialogTitle>Mapa de Envíos</DialogTitle>
               </DialogHeader>
-              <ShipmentMap shipments={data} />
+              <ShipmentMap shipments={shipments} />
             </DialogContent>
           </Dialog>
         </div>
@@ -386,7 +409,11 @@ export default function ShipmentsPage() {
             ],
           },
         ]}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
       />
+
+      {/* Modal de detalles del envío */}
       {selectedShipment && (
         <Dialog open={!!selectedShipment} onOpenChange={() => setSelectedShipment(null)}>
           <DialogContent className="sm:max-w-[600px] bg-white rounded-lg">
@@ -397,7 +424,39 @@ export default function ShipmentsPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Modal de asignación de envíos */}
+      <ShipmentAssignmentModal
+        isOpen={isAssignmentOpen}
+        onClose={() => setIsAssignmentOpen(false)}
+        selectedShipments={selectedShipments}
+      />
+
+      {/* Modal de mapa de ruta */}
+      <Dialog open={isRouteMapOpen} onOpenChange={setIsRouteMapOpen}>
+        <DialogContent className="sm:max-w-[800px] bg-white rounded-lg">
+          <DialogHeader>
+            <DialogTitle>Mapa de Ruta</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="route">Seleccionar Ruta</Label>
+              <Select value={selectedRouteId} onValueChange={setSelectedRouteId}>
+                <SelectTrigger id="route">
+                  <SelectValue placeholder="Seleccionar ruta" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ruta Norte</SelectItem>
+                  <SelectItem value="2">Ruta Sur</SelectItem>
+                  <SelectItem value="3">Ruta Este</SelectItem>
+                  <SelectItem value="4">Ruta Oeste</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <RouteMap routeId={selectedRouteId} height="400px" />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
-

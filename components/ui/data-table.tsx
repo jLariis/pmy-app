@@ -28,14 +28,21 @@ interface DataTableProps<TData, TValue> {
     title: string
     options: { label: string; value: string }[]
   }[]
+  rowSelection?: Record<string, boolean>
+  setRowSelection?: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
 }
 
-export function DataTable<TData, TValue>({ columns, data, searchKey, filters }: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({})
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  searchKey,
+  filters,
+  rowSelection = {},
+  setRowSelection,
+}: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = React.useState<string>("")
 
   const table = useReactTable({
     data,
@@ -45,30 +52,21 @@ export function DataTable<TData, TValue>({ columns, data, searchKey, filters }: 
       columnVisibility,
       rowSelection,
       columnFilters,
-      globalFilter
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    globalFilterFn: (row, columnId, filterValue) => {
-      const search = filterValue.toLowerCase();
-
-      return ["recipientName", "recipientAddress", "recipientCity", "recipientZip", "trackingNumber"].some((col) => {
-        return row.getValue(col)?.toString().toLowerCase().includes(search);
-      });
-    },
   })
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} searchKey={searchKey} filters={filters} setGlobalFilter={setGlobalFilter}/>
+      <DataTableToolbar table={table} searchKey={searchKey} filters={filters} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -76,7 +74,7 @@ export function DataTable<TData, TValue>({ columns, data, searchKey, filters }: 
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead  key={header.id}>
+                    <TableHead key={header.id}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   )
@@ -107,4 +105,3 @@ export function DataTable<TData, TValue>({ columns, data, searchKey, filters }: 
     </div>
   )
 }
-

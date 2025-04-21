@@ -58,4 +58,3 @@ export const columns: ColumnDef<Invoice>[] = [
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ]
-

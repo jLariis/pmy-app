@@ -7,4 +7,3 @@ export const administrationRoute = createFileRoute("/dashboard/administration")(
 function Administration() {
   return <h1>Administración</h1>
 }
-
