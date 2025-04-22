@@ -21,6 +21,9 @@ import {
   Building,
   UserPlus,
   ShieldCheck,
+  TrendingDown,
+  LineChart,
+  Wallet,
 } from "lucide-react"
 import type React from "react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -74,6 +77,28 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
+    name: "Finanzas",
+    icon: <Wallet className="text-brand-brown" />,
+    path: "/dashboard/finance",
+    subItems: [
+      {
+        name: "Dashboard Financiero",
+        icon: <LineChart className="text-brand-brown" />,
+        path: "/dashboard/finance/dashboard",
+      },
+      {
+        name: "Análisis de Ingresos",
+        icon: <DollarSign className="text-brand-brown" />,
+        path: "/dashboard/reports/ingresos",
+      },
+      {
+        name: "Gestión de Gastos",
+        icon: <TrendingDown className="text-brand-brown" />,
+        path: "/dashboard/finance/expenses",
+      },
+    ],
+  },
+  {
     name: "Reportes Gerenciales",
     icon: <BarChart2 className="text-brand-brown" />,
     path: "/dashboard/reports",
@@ -88,11 +113,6 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    name: "Análisis de Ingresos",
-    icon: <DollarSign className="text-brand-brown" />,
-    path: "/dashboard/reports/ingresos",
-  },
-  {
     name: "Nómina",
     icon: <DollarSign className="text-brand-brown" />,
     path: "/dashboard/payroll",
@@ -105,7 +125,7 @@ const menuItems: MenuItem[] = [
 ]
 
 export function Sidebar({ className = "" }: { className?: string }) {
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [expandedItems, setExpandedItems] = useState<string[]>(["Finanzas"]) // Expandir Finanzas por defecto
 
   const toggleSubMenu = (itemName: string) => {
     setExpandedItems((prev) =>

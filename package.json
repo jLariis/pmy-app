@@ -60,6 +60,7 @@
     "zod": "^3.24.1",
     "leaflet": "latest",
     "jspdf": "latest",
+    "chart.js": "latest",
     "@tanstack/react-router": "latest",
     "react-router-dom": "latest",
     "@tanstack/react-table": "latest",
@@ -67,7 +68,8 @@
     "react-leaflet": "latest",
     "xlsx": "latest",
     "jspdf-autotable": "latest",
-    "papaparse": "latest"
+    "papaparse": "latest",
+    "react-chartjs-2": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

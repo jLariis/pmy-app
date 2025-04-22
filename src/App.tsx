@@ -8,6 +8,9 @@ import { vehicleMaintenanceRoute } from "./routes/vehicleMaintenance"
 import { reportsRoute } from "./routes/reports"
 import { payrollRoute } from "./routes/payroll"
 import { invoicesRoute } from "./routes/invoices"
+import { financeRoute } from "./routes/finance"
+import { financeDashboardRoute } from "./routes/finance/dashboard"
+import { financeExpensesRoute } from "./routes/finance/expenses"
 
 const routeTree = rootRoute.addChildren([
   loginRoute,
@@ -18,6 +21,7 @@ const routeTree = rootRoute.addChildren([
     reportsRoute,
     payrollRoute,
     invoicesRoute,
+    financeRoute.addChildren([financeDashboardRoute, financeExpensesRoute]),
   ]),
 ])
 

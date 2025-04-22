@@ -1,6 +1,20 @@
+"use client"
+
 import { Link } from "@tanstack/react-router"
 import { useState } from "react"
-import { Users, Briefcase, Truck, BarChart2, DollarSign, FileText, ChevronDown, ChevronRight } from "lucide-react"
+import {
+  Users,
+  Briefcase,
+  Truck,
+  BarChart2,
+  DollarSign,
+  FileText,
+  ChevronDown,
+  ChevronRight,
+  Wallet,
+  TrendingDown,
+  LineChart,
+} from "lucide-react"
 import type React from "react" // Added import for React
 
 interface MenuItem {
@@ -14,13 +28,22 @@ const menuItems: MenuItem[] = [
   { name: "Administración", icon: <Users />, path: "/dashboard/administration" },
   { name: "Operación", icon: <Briefcase />, path: "/dashboard/operation" },
   { name: "Mantenimiento de Vehículos", icon: <Truck />, path: "/dashboard/vehicle-maintenance" },
+  {
+    name: "Finanzas",
+    icon: <Wallet />,
+    path: "/dashboard/finance",
+    subItems: [
+      { name: "Dashboard Financiero", icon: <LineChart />, path: "/dashboard/finance/dashboard" },
+      { name: "Gestión de Gastos", icon: <TrendingDown />, path: "/dashboard/finance/expenses" },
+    ],
+  },
   { name: "Reportes Gerenciales", icon: <BarChart2 />, path: "/dashboard/reports" },
   { name: "Nómina", icon: <DollarSign />, path: "/dashboard/payroll" },
   { name: "Facturas", icon: <FileText />, path: "/dashboard/invoices" },
 ]
 
 export function Sidebar() {
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [expandedItems, setExpandedItems] = useState<string[]>(["Finanzas"]) // Expandir Finanzas por defecto
 
   const toggleSubMenu = (itemName: string) => {
     setExpandedItems((prev) =>
