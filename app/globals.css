@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --primary: 0 72% 51%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 39 100% 50%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 25 56% 40%;
+    --accent-foreground: 60 9.1% 97.8%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 20 14.3% 4.1%;
+    --radius: 0.5rem;
+
+    /* Sidebar variables */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 20 14.3% 4.1%;
+    --sidebar-primary: 0 72% 51%;
+    --sidebar-primary-foreground: 60 9.1% 97.8%;
+    --sidebar-accent: 39 100% 50%;
+    --sidebar-accent-foreground: 24 9.8% 10%;
+    --sidebar-border: 0 0% 100%;
+    --sidebar-ring: 0 72% 51%;
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 60 9.1% 97.8%;
+    --card: 20 14.3% 4.1%;
+    --card-foreground: 60 9.1% 97.8%;
+    --popover: 20 14.3% 4.1%;
+    --popover-foreground: 60 9.1% 97.8%;
+    --primary: 0 72% 51%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 39 100% 50%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 12 6.5% 15.1%;
+    --muted-foreground: 24 5.4% 63.9%;
+    --accent: 25 56% 40%;
+    --accent-foreground: 60 9.1% 97.8%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 12 6.5% 15.1%;
+    --input: 12 6.5% 15.1%;
+    --ring: 24 5.7% 82.9%;
+
+    /* Sidebar variables */
+    --sidebar-background: 20 14.3% 4.1%;
+    --sidebar-foreground: 60 9.1% 97.8%;
+    --sidebar-primary: 0 72% 51%;
+    --sidebar-primary-foreground: 60 9.1% 97.8%;
+    --sidebar-accent: 39 100% 50%;
+    --sidebar-accent-foreground: 24 9.8% 10%;
+    --sidebar-border: 20 14.3% 4.1%;
+    --sidebar-ring: 0 72% 51%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Estilos personalizados para el sidebar */
+[data-sidebar="sidebar"] {
+  @apply bg-primary text-white;
+}
+
+[data-sidebar="content"] {
+  @apply p-2;
+}
+
+[data-sidebar="menu-button"] {
+  @apply text-white;
+}
+
+[data-sidebar="menu-button"][data-active="true"] {
+  @apply bg-white/20 font-medium;
+}
+
+[data-sidebar="menu-button"]:hover {
+  @apply bg-white/10;
+}
+
+[data-sidebar="menu-button"] span {
+  @apply text-white;
+}
+
+[data-sidebar="menu-button"] svg {
+  @apply text-white;
+}
+
+/* Asegurar que el texto sea visible */
+.text-sidebar-foreground {
+  @apply text-white;
+}
